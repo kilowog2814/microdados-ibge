@@ -9,3 +9,8 @@ https://www.ibge.gov.br/estatisticas/sociais/trabalho/22827-censo-demografico-20
 https://www.ibge.gov.br/estatisticas/sociais/populacao/9127-pesquisa-nacional-por-amostra-de-domicilios.html?=&t=microdados
 
 Obs.: Descrição feita a partir de um freela que encontrei na internet.
+
+Desafios encontrados nesse trabalho:
+- Estudo sobre o AWS-RDS e nuvem AWS
+- Compreensão dos dados do IBGE
+- Big Data
