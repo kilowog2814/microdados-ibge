@@ -10,7 +10,17 @@ https://www.ibge.gov.br/estatisticas/sociais/populacao/9127-pesquisa-nacional-po
 
 Obs.: Descrição feita a partir de um freela que encontrei na internet.
 
-Desafios encontrados nesse trabalho:
+## Estrutura
+
+![alt text](image.png)
+
+## Anotações
+
+Por motivos de estudos, vou migrar o banco AWS-RDS para o BigQuery do Google, e realizar alguns processamentos em dbt cloud e visualização de dados no python.
+
+
+
+## Desafios encontrados nesse trabalho:
 - Estudo sobre o AWS-RDS e nuvem AWS
 - Compreensão dos dados do IBGE
 - Big Data
