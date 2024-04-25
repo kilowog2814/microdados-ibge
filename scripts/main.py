@@ -7,6 +7,7 @@ import boto3
 from botocore.exceptions import ClientError
 import json
 import asyncio
+import os
 
 config = dotenv_values(".env")
 
@@ -16,33 +17,36 @@ with open("links.json", mode="r") as links_json:
 
 
 def download_file(url: str) -> bytes:
+    """Download dos arquivos pelos links"""
+
     try:
         r = requests.get(url, timeout=100, stream=True)
         r.raise_for_status()
+
         return r.content
     except requests.exceptions.RequestException as e:
         logger.exception(f"Erro ao baixar o arquivo: {e}")
         raise
 
 
-def extract_zip(input_zip) -> list:
+def extract_zip(zipFile):
+    """Extração dos arquivos compactados para a pasta do ./data depois do download"""
 
     try:
 
-        files_unzip = []
+        extract_path = "./data/"
 
-        files = zipfile.ZipFile(BytesIO(input_zip))
+        with zipfile.ZipFile(BytesIO(zipFile)) as zip_ref:
 
-        for name in files.namelist():
+            for member in zip_ref.namelist():
+                if ".txt" in member:
+                    filename = os.path.basename(member)
+                    if filename:
 
-            if ".txt" in name:
-                file_content = files.read(name)
+                        destination = os.path.join(extract_path, filename)
+                        zip_ref.extract(member, extract_path)
 
-                return_context = {"fileName": name, "content": file_content}
-
-                files_unzip.append(return_context)
-
-        return files_unzip
+                        os.rename(os.path.join(extract_path, member), destination)
 
     except zipfile.BadZipFile as e:
 
@@ -51,6 +55,7 @@ def extract_zip(input_zip) -> list:
 
 
 async def s3_upload(unzip_file, link_download: str) -> None:
+    """Sobe os arquivos no S3"""
 
     try:
         s3 = boto3.client("s3")
@@ -83,6 +88,7 @@ async def s3_upload(unzip_file, link_download: str) -> None:
 
 
 async def parallel_s3_uploads(unzip_files, link_download: str) -> None:
+    """Cria as corotinas para subir os arquivos no s3"""
     coros = []
     for unzip_file in unzip_files:
 
@@ -91,20 +97,31 @@ async def parallel_s3_uploads(unzip_files, link_download: str) -> None:
     await asyncio.gather(*coros)
 
 
-if __name__ == "__main__":
+def lambda_handler(event, context):
+    """Handler da AWS Lambda"""
 
-    for link in links_list["links"]:
+    try:
+        for link in links_list["links"]:
 
-        logger.info(f"baixando bases do link: {link}")
+            logger.info(f"baixando bases do link: {link}")
 
-        zip_file = download_file(link)
+            zip_file = download_file(link)
 
-        logger.success("download finalizado")
+            logger.success("download finalizado")
 
-        logger.info("iniciando processo de descompactacao e upload dos arquivos")
+            logger.info("iniciando processo de descompactacao e upload dos arquivos")
 
+            extract_zip(zip_file)
+
+            return {"statusCode": 200, "body": json.dumps({"message": "processo ok"})}
+
+    except Exception as e:
+        return {"statusCode": 404, "Erro": e, "context": context, "event": event}
+
+        """
         event_loop = asyncio.new_event_loop()
 
         unzip_file = extract_zip(zip_file)
 
         event_loop.run_until_complete(parallel_s3_uploads(unzip_file, link))
+        """
