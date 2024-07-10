@@ -9,9 +9,20 @@ Documentações nos links abaixo:
 
 ## Arquitetura da solução
 
-![alt text](image.png)
+![alt text](image-1.png)
 
 ## Estrutura do repositorio
+``` 
+├── ingestion
+    ├── micro-dados-2000.py
+    ├── micro-dados-2010.py
+├── transform
+├── Dockerfile
+├── requirements.txt
+├── .env
+├── README.md
+└── links.json
+```
 
 ## Como rodar
 ### Ingestion
