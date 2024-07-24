@@ -1,0 +1,8 @@
+version: '3.8'
+services:
+  micro-dados-2000:
+    image: public.ecr.aws/lambda/python:3.11
+    build:
+      context: .  # Diretório do Dockerfile
+      dockerfile: Dockerfile  
+    command: ["micro-dados-2000.lambda_handler"]
