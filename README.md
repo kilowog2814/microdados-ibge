@@ -17,6 +17,8 @@ Documentações nos links abaixo:
     ├── micro-dados-2000.py
     ├── micro-dados-2010.py
 ├── transform
+    ├── raw_data_ibge_2000.ipynb
+    ├── raw_data_ibge_2010.ipynb
 ├── Dockerfile
 ├── requirements.txt
 ├── .env
